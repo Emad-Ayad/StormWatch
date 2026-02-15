@@ -11,6 +11,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.stormwatch.ui.theme.StormWatchTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,11 +22,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             StormWatchTheme {
-                Scaffold( modifier = Modifier.fillMaxSize() ) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                Scaffold( modifier = Modifier.fillMaxSize(),
+                    ) { innerPadding ->
+                    MyApp(    )
                 }
             }
         }
@@ -31,17 +32,25 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
+fun MyApp() {
+    val navController = rememberNavController()
+
+    NavHost(navController = navController,
+        startDestination = Screens.HomeScreen) {
+
+        composable<Screens.HomeScreen> {
+            HomeScreen(navController)
+        }
+
+    }
 }
+
+
 
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     StormWatchTheme {
-        Greeting("Android")
+        MyApp()
     }
 }
