@@ -15,8 +15,10 @@ import com.example.stormwatch.data.model.CurrentWeatherResponse
 import com.example.stormwatch.data.model.City
 import com.example.stormwatch.data.model.Coord
 import kotlinx.coroutines.launch
+import com.example.stormwatch.presentation.settings.SettingsViewModel
 
-class HomeViewModel(private val repo : WeatherRepository) : ViewModel() {
+class HomeViewModel(private val repo : WeatherRepository,
+                    private val settingsViewModel: SettingsViewModel) : ViewModel() {
     private val _forecast: MutableState<ForecastResponse> = mutableStateOf(ForecastResponse(
         city = City("", Coord(0.0, 0.0)),
         list = emptyList()))
@@ -38,14 +40,12 @@ class HomeViewModel(private val repo : WeatherRepository) : ViewModel() {
     fun getForecast(
         lat: Double,
         lon: Double,
-        units: String?,
-        lang: String
     ) {
         viewModelScope.launch {
             _isLoading.value = true
             try {
-                val result = repo.getForecast(lat, lon, units, lang)
-                _forecast.value = result
+                val (units, lang) = settingsViewModel.settingsState.value
+                _forecast.value = repo.getForecast(lat, lon, units, lang)
             } catch (e: Exception) {
                 _error.value = e.message
             } finally {
@@ -70,12 +70,12 @@ class HomeViewModel(private val repo : WeatherRepository) : ViewModel() {
 
 }
 
-class HomeViewModelFactory() : ViewModelProvider.Factory {
+class HomeViewModelFactory(private val settingsViewModel: SettingsViewModel) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
 
         val remoteDataSource = RemoteDataSource()
         val repo = WeatherRepository(remoteDataSource)
-        return HomeViewModel(repo) as T
+        return HomeViewModel(repo,settingsViewModel) as T
     }
 }

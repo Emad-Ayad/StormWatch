@@ -18,12 +18,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -35,6 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -52,32 +55,31 @@ import com.example.stormwatch.data.model.DayForecast
 import com.example.stormwatch.presentation.home.view_model.HomeViewModel
 import com.example.stormwatch.presentation.home.view_model.HomeViewModelFactory
 import kotlin.math.roundToInt
+import com.example.stormwatch.presentation.settings.SettingsViewModel
+import com.example.stormwatch.presentation.settings.SettingsViewModelFactory
 
 
 @Composable
 fun HomeScreen(navController: NavHostController){
 
+    val context = LocalContext.current
+    val settingsViewModel: SettingsViewModel = viewModel( factory = SettingsViewModelFactory(context))
+    val viewModel: HomeViewModel = viewModel(factory = HomeViewModelFactory(settingsViewModel))
 
-    val viewModel: HomeViewModel = viewModel(factory = HomeViewModelFactory())
-    val forecast = viewModel.forecast.value
-    val currentWeather = viewModel.current.value
-    val isLoading by viewModel.isLoading.observeAsState(false)
-    val error by viewModel.error.observeAsState()
+    val settingsState = settingsViewModel.settingsState.collectAsState()
+    val (units, lang) = settingsState.value
 
-    LaunchedEffect(Unit) {
+
+    LaunchedEffect(units, lang) {
         viewModel.getForecast(
             lat = 30.0444,
             lon = 31.2357,
-            units = "metric",
-            lang = "en"
-        )
-        viewModel.getCurrentWeather(
-            lat = 30.0444,
-            lon = 31.2357,
-            units = "metric",
-            lang = "en"
         )
     }
+
+    val forecast = viewModel.forecast.value
+    val isLoading by viewModel.isLoading.observeAsState(false)
+    val error by viewModel.error.observeAsState()
 
     Box(
         modifier = Modifier
@@ -132,6 +134,7 @@ fun HomeScreen(navController: NavHostController){
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
                         .padding(horizontal = 16.dp)
                         .padding(top = 32.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -144,6 +147,7 @@ fun HomeScreen(navController: NavHostController){
                     HourlyStrip(it)
                     ForecastTabs(it)
 
+                    Spacer(Modifier.height(18.dp))
                 }
             }
         }

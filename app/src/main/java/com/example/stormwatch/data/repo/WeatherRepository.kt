@@ -26,5 +26,12 @@ class WeatherRepository(
         return remoteDataSource.getCurrentWeather(lat, lon, units, lang)
     }
 
-
+    suspend fun getDailyForecast(
+        lat: Double,
+        lon: Double,
+        units: String?,
+        lang: String
+    ): ForecastResponse{
+        return remoteDataSource.getDailyForecast(lat, lon, units, lang)
+    }
 }
