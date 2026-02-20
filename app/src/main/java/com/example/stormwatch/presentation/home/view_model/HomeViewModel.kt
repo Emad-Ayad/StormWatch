@@ -16,6 +16,8 @@ import com.example.stormwatch.data.model.City
 import com.example.stormwatch.data.model.Coord
 import kotlinx.coroutines.launch
 import com.example.stormwatch.presentation.settings.SettingsViewModel
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 
 class HomeViewModel(private val repo : WeatherRepository,
                     private val settingsViewModel: SettingsViewModel) : ViewModel() {
@@ -25,10 +27,6 @@ class HomeViewModel(private val repo : WeatherRepository,
     val forecast: State<ForecastResponse>
         get() = _forecast
 
-    private val _current: MutableState<CurrentWeatherResponse?> = mutableStateOf(null)
-    val current: State<CurrentWeatherResponse?>
-        get() = _current
-
     private val _error: MutableLiveData<String> = MutableLiveData()
     val error: LiveData<String>
         get() = _error
@@ -37,33 +35,37 @@ class HomeViewModel(private val repo : WeatherRepository,
     val isLoading: LiveData<Boolean>
         get() = _isLoading
 
-    fun getForecast(
-        lat: Double,
-        lon: Double,
-    ) {
-        viewModelScope.launch {
-            _isLoading.value = true
-            try {
-                val (units, lang) = settingsViewModel.settingsState.value
-                _forecast.value = repo.getForecast(lat, lon, units, lang)
-            } catch (e: Exception) {
-                _error.value = e.message
-            } finally {
-                _isLoading.value = false
-            }
-        }
+    init {
+        getForecast()
     }
 
-    fun getCurrentWeather(lat: Double, lon: Double, units: String, lang: String) {
+    fun getForecast() {
         viewModelScope.launch {
-            _isLoading.value = true
-            try {
-                val result = repo.getCurrentWeather(lat, lon, units, lang)
-                _current.value = result
-            } catch (e: Exception) {
-                _error.value = e.message
-            } finally {
-                _isLoading.value = false
+            combine(
+                settingsViewModel.settingsState,
+                settingsViewModel.location
+            ) { settings, location ->
+                Triple(settings.first, settings.second, location)
+            }.collectLatest { (units, lang, location) ->
+
+                val lat = location.first
+                val lon = location.second
+
+                if (lat == null || lon == null) return@collectLatest
+
+                _isLoading.postValue(true)
+                try {
+                    _forecast.value = repo.getForecast(
+                        lat = lat,
+                        lon = lon,
+                        units = units,
+                        lang = lang
+                    )
+                } catch (e: Exception) {
+                    _error.postValue(e.message)
+                } finally {
+                    _isLoading.postValue(false)
+                }
             }
         }
     }

@@ -65,18 +65,6 @@ fun HomeScreen(navController: NavHostController){
     val context = LocalContext.current
     val settingsViewModel: SettingsViewModel = viewModel( factory = SettingsViewModelFactory(context))
     val viewModel: HomeViewModel = viewModel(factory = HomeViewModelFactory(settingsViewModel))
-
-    val settingsState = settingsViewModel.settingsState.collectAsState()
-    val (units, lang) = settingsState.value
-
-
-    LaunchedEffect(units, lang) {
-        viewModel.getForecast(
-            lat = 30.0444,
-            lon = 31.2357,
-        )
-    }
-
     val forecast = viewModel.forecast.value
     val isLoading by viewModel.isLoading.observeAsState(false)
     val error by viewModel.error.observeAsState()
