@@ -34,10 +34,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 
 
 @Composable
-fun SettingsScreen() {
+fun SettingsScreen(navController: NavHostController) {
     val context = LocalContext.current
     val viewModel: SettingsViewModel = viewModel(factory = SettingsViewModelFactory(context))
 
@@ -124,7 +125,9 @@ fun SettingsScreen() {
                                     Manifest.permission.ACCESS_COARSE_LOCATION)
                             )
                         }
-                        // Map later
+                        if (it == "map") {
+                            navController.navigate("map_picker")
+                        }
                     }
                 )
 

@@ -66,6 +66,13 @@ class SettingsViewModel(private val settings: SettingsStore) : ViewModel() {
         }
     }
 
+    fun saveMapLocation(lat: Double, lon: Double) {
+        viewModelScope.launch {
+            settings.saveLocationMethod("map")
+            settings.saveLocation(lat, lon)
+        }
+    }
+
     @SuppressLint("MissingPermission")
     private suspend fun Context.getCurrentLocationSuspend(): Location =
         suspendCancellableCoroutine { cont ->

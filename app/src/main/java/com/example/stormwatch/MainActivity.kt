@@ -6,9 +6,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Settings
+import com.example.stormwatch.presentation.settings.MapScreen
+import com.example.stormwatch.presentation.settings.SettingsViewModel
+import com.example.stormwatch.presentation.settings.SettingsViewModelFactory
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -18,7 +18,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -62,7 +64,10 @@ fun MyApp(modifier: Modifier = Modifier) {
                 HomeScreen(navController)
             }
             composable("SettingsScreen") {
-                SettingsScreen()
+                SettingsScreen(navController)
+            }
+            composable("map_picker") {
+                MapScreen(navController)
             }
         }
     }

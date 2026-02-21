@@ -68,7 +68,7 @@ import com.example.stormwatch.presentation.settings.SettingsViewModelFactory
 fun HomeScreen(navController: NavHostController){
 
     val context = LocalContext.current
-    val settingsViewModel: SettingsViewModel = viewModel( factory = SettingsViewModelFactory(context))
+    val settingsViewModel: SettingsViewModel = viewModel(factory = SettingsViewModelFactory(context))
     val viewModel: HomeViewModel = viewModel(factory = HomeViewModelFactory(settingsViewModel))
     val forecast = viewModel.forecast.value
     val isLoading by viewModel.isLoading.observeAsState(false)
@@ -376,9 +376,3 @@ private fun HourChip(hour: String, desc: String, icon: String) {
     }
 }
 
-@Preview(showBackground = true, backgroundColor = 0xFF000000)
-@Composable
-private fun PreviewHome() {
-    val navController = rememberNavController()
-    HomeScreen(navController)
-}
