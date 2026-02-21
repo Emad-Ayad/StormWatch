@@ -55,6 +55,17 @@ class SettingsViewModel(private val settings: SettingsStore) : ViewModel() {
         }
     }
 
+    fun ensureGpsLocation(context: Context) {
+        viewModelScope.launch {
+            if (locationMethod.value == "gps") {
+                val (lat, lon) = location.value
+                if (lat == null || lon == null) {
+                    fetchGpsLocation(context)
+                }
+            }
+        }
+    }
+
     @SuppressLint("MissingPermission")
     private suspend fun Context.getCurrentLocationSuspend(): Location =
         suspendCancellableCoroutine { cont ->
