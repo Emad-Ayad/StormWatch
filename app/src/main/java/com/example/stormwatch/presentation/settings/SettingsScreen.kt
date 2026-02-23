@@ -118,7 +118,7 @@ fun SettingsScreen(navController: NavHostController) {
                     selectedValue = locationMethod,
                     onSelect = {
                         viewModel.updateLocationMethod(it)
-                        if (it == "gps") {
+                        if (it == "gps") { // TODO recheck permissin
                             if (hasPermission.value) viewModel.fetchGpsLocation(context)
                             else permissionLauncher.launch(
                                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,

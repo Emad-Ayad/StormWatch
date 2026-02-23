@@ -29,7 +29,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import com.example.stormwatch.presentation.utils.*
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -128,7 +128,7 @@ fun HomeScreen(navController: NavHostController){
                 )
         )
 
-        if (isLoading||forecast.list.isEmpty()) {
+        if (isLoading) {
 
             Column(
                 modifier = Modifier.fillMaxSize(),
@@ -136,6 +136,20 @@ fun HomeScreen(navController: NavHostController){
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
                 CircularProgressIndicator()
+            }
+
+        } else if (forecast.list.isEmpty()) {
+
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ){
+                Text(
+                    text = "Location not set.\nPlease choose GPS or Map.",
+                    color = Color.White,
+                    textAlign = TextAlign.Center
+                )
             }
 
         } else if (error != null) {
@@ -174,29 +188,6 @@ fun HomeScreen(navController: NavHostController){
     }
 }
 
-@Composable
-private fun MyCard(
-    modifier: Modifier = Modifier,
-    containerColor: Color = GlassDark,
-    padding: PaddingValues = PaddingValues(16.dp),
-    content: @Composable ColumnScope.() -> Unit
-) {
-
-    Card(
-        modifier = modifier.drawBehind {
-            drawRoundRect(
-                color = GlassBorder,
-                size = size,
-                cornerRadius = CornerRadius(24.dp.toPx(), 24.dp.toPx()),
-                style = Stroke(width = 1.dp.toPx())
-            )
-        },
-        colors = CardDefaults.cardColors(containerColor),
-        shape =  RoundedCornerShape(24.dp)
-    ) {
-        Column(Modifier.padding(padding), content = content)
-    }
-}
 
 @Composable
 private fun CurrentWeatherCard(forecast : ForecastResponse) {
@@ -220,7 +211,7 @@ private fun CurrentWeatherCard(forecast : ForecastResponse) {
                 Spacer(Modifier.height(12.dp))
 
                 Text(current?.main?.temp?.roundToInt().toString(), color = OnGlass,fontSize = 38.sp,
-                    fontWeight = FontWeight.Medium)
+                    fontWeight = FontWeight.Medium) // TODO put the temp
 
                 current?.weather?.first()?.description?.let { Text(it, color = AccentYellow, fontWeight = FontWeight.Medium) }
             }
@@ -249,7 +240,7 @@ private fun MetricsRow(forecast : ForecastResponse) {
             Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            MetricItem("${current?.wind?.speed} km/h", "Wind", R.drawable.wind)
+            MetricItem("${current?.wind?.speed} km/h", "Wind", R.drawable.wind) // TODO change this km/h
             MetricItem("${current?.main?.humidity} %", "Humidity", R.drawable.humidity)
             MetricItem("${current?.clouds?.all} %", "Clouds", R.drawable.rain)
             MetricItem("${current?.main?.pressure} hPa", "Pressure", R.drawable.pressure)
@@ -257,20 +248,7 @@ private fun MetricsRow(forecast : ForecastResponse) {
     }
 }
 
-@Composable
-private fun MetricItem(value: String, label: String, icon: Int) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
 
-        Image(painter = painterResource(icon),
-            contentDescription = null,
-            modifier = Modifier.size(30.dp),
-            colorFilter = ColorFilter.tint(OnGlass)
-        )
-
-        Text(value, color = OnGlass, fontWeight = FontWeight.SemiBold)
-        Text(label, color = SubtleOnGlass)
-    }
-}
 
 @Composable
 private fun ForecastTabs(forecast: ForecastResponse) {
@@ -288,35 +266,6 @@ private fun ForecastTabs(forecast: ForecastResponse) {
     }
 }
 
-@Composable
-private fun DayTab(day: DayForecast) {
-    Row(
-        Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Column {
-            Text(
-                day.date.takeLast(5),
-                color = OnGlass,
-                fontWeight = FontWeight.Bold,
-                fontSize = 18.sp
-            )
-            Text(
-                "${day.minTemp.roundToInt()}° / ${day.maxTemp.roundToInt()}°",
-                color = SubtleOnGlass,
-                fontSize = 14.sp
-            )
-        }
-
-        val iconUrl = "https://openweathermap.org/img/wn/${day.icon}@2x.png"
-        AsyncImage(
-            model = iconUrl,
-            contentDescription = null,
-            modifier = Modifier.size(32.dp)
-        )
-    }
-}
 
 private fun ForecastResponse.nextFiveDays(): List<DayForecast> {
     val today = this.list.firstOrNull()?.dateText?.take(10) ?: ""
@@ -352,27 +301,3 @@ private fun HourlyStrip(forecast : ForecastResponse) {
         }
     }
 }
-
-@Composable
-private fun HourChip(hour: String, desc: String, icon: String) {
-    val iconUrl = "https://openweathermap.org/img/wn/$icon@2x.png"
-
-    MyCard(
-        modifier = Modifier.width(90.dp),
-        containerColor = GlassDark
-    ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxWidth()) {
-            Text(hour, color = OnGlass)
-
-            AsyncImage(
-                model = iconUrl,
-                contentDescription = null,
-                modifier = Modifier.size(40.dp)
-            )
-            Text("$desc ", color = SubtleOnGlass, textAlign = TextAlign.Center )
-        }
-    }
-}
-
