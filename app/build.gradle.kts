@@ -4,6 +4,7 @@ import java.io.FileInputStream
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+    id("com.google.devtools.ksp")
     kotlin("plugin.serialization") version "2.1.10"
 
 }
@@ -95,4 +96,9 @@ dependencies {
     implementation("com.google.android.gms:play-services-maps:18.1.0")
     implementation("com.google.maps.android:maps-compose:6.12.0")
     implementation("androidx.compose.material:material-icons-extended")
+
+
+    implementation ("androidx.room:room-ktx:2.8.4")
+    implementation ("androidx.room:room-runtime:2.8.4")
+    ksp ("androidx.room:room-compiler:2.8.4")
 }

@@ -29,6 +29,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.stormwatch.presentation.home.HomeScreen
 import com.example.stormwatch.ui.theme.StormWatchTheme
 import com.example.stormwatch.presentation.settings.SettingsScreen
+import com.example.stormwatch.presentation.fav.FavoritesScreen
 import com.example.stormwatch.ui.theme.*
 
 class MainActivity : ComponentActivity() {
@@ -69,6 +70,9 @@ fun MyApp(modifier: Modifier = Modifier) {
             composable("map_picker") {
                 MapScreen(navController)
             }
+            composable("FavScreen") {
+                FavoritesScreen(navController)
+            }
         }
     }
 }
@@ -77,7 +81,8 @@ fun MyApp(modifier: Modifier = Modifier) {
 fun BottomNavBar(navController: NavHostController) {
     val items = listOf(
         Screens.HomeScreen,
-        Screens.SettingsScreen
+        Screens.SettingsScreen,
+        Screens.FavScreen
     )
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
