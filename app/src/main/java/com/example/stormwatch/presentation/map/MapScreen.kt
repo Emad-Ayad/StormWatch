@@ -103,13 +103,11 @@ fun MapScreen(navController: NavHostController, onLocationSelected: (GeoCodingDt
                 Button(
                     onClick = {
                         selectedLatLng?.let {
-                            val city = GeoCodingDto(
-                                name = if (searchText.isNotBlank()) searchText else "Selected location",
-                                lat = it.latitude,
-                                lon = it.longitude,
-                                country = ""
+                            mapViewModel.reverseGeocodeAndSelect(
+                                it.latitude,
+                                it.longitude,
+                                onLocationSelected
                             )
-                            onLocationSelected(city)
                             navController.popBackStack()
                         }
                     },

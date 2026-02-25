@@ -21,16 +21,19 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.stormwatch.presentation.home.HomeScreen
 import com.example.stormwatch.ui.theme.StormWatchTheme
 import com.example.stormwatch.presentation.settings.SettingsScreen
 import com.example.stormwatch.presentation.fav.FavoritesScreen
 import com.example.stormwatch.presentation.fav.FavoriteViewModel
 import com.example.stormwatch.presentation.fav.FavoritesViewModelFactory
+import com.example.stormwatch.presentation.weather_details.WeatherDetailsScreen
 import com.example.stormwatch.ui.theme.*
 
 class MainActivity : ComponentActivity() {
@@ -90,6 +93,27 @@ fun MyApp(modifier: Modifier = Modifier) {
                     }
                 )
             }
+            composable(
+                route = "weather_details/{lat}/{lon}/{city}",
+                arguments = listOf(
+                    navArgument("lat") { type = NavType.StringType  },
+                    navArgument("lon") { type = NavType.StringType  },
+                    navArgument("city") { type = NavType.StringType }
+                )
+            ) {
+
+                val lat = it.arguments?.getString("lat")?.toDouble() ?: 0.0
+                val lon =  it.arguments?.getString("lon")?.toDouble() ?: 0.0
+                val city = it.arguments?.getString("city") ?: "UnKnown"
+
+                WeatherDetailsScreen(
+                    lat = lat,
+                    lon = lon,
+                    cityName = city,
+                    navController = navController
+                )
+            }
+
             composable("FavScreen") {
                 FavoritesScreen(navController)
             }

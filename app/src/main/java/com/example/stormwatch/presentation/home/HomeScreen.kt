@@ -190,7 +190,7 @@ fun HomeScreen(navController: NavHostController){
 
 
 @Composable
-private fun CurrentWeatherCard(forecast : ForecastResponse) {
+fun CurrentWeatherCard(forecast : ForecastResponse) {
     val current = forecast.list.firstOrNull()
 
     val iconUrl = "https://openweathermap.org/img/wn/${current?.weather?.firstOrNull()?.icon}@2x.png"
@@ -233,7 +233,7 @@ private fun CurrentWeatherCard(forecast : ForecastResponse) {
 }
 
 @Composable
-private fun MetricsRow(forecast : ForecastResponse) {
+fun MetricsRow(forecast : ForecastResponse) {
     val current = forecast.list.firstOrNull()
     MyCard(containerColor = GlassDarkStrong) {
         Row(
@@ -251,7 +251,7 @@ private fun MetricsRow(forecast : ForecastResponse) {
 
 
 @Composable
-private fun ForecastTabs(forecast: ForecastResponse) {
+fun ForecastTabs(forecast: ForecastResponse) {
     MyCard(containerColor = GlassDarkStrong, padding = PaddingValues(0.dp)) {
         Column(
             Modifier
@@ -283,7 +283,7 @@ private fun ForecastResponse.nextFiveDays(): List<DayForecast> {
 }
 
 @Composable
-private fun HourlyStrip(forecast : ForecastResponse) {
+fun HourlyStrip(forecast : ForecastResponse) {
     val todayDate = forecast.list.firstOrNull()?.dateText?.take(10) ?: ""
     val todayHours = forecast.list.filter { it.dateText.take(10) == todayDate }
     Row(

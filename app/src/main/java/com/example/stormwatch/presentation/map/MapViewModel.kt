@@ -29,6 +29,26 @@ class MapViewModel(private val repo : WeatherRepository) : ViewModel() {
             }
         }
     }
+
+    fun reverseGeocodeAndSelect(
+        lat: Double,
+        lon: Double,
+        onSelected: (GeoCodingDto) -> Unit
+    ) {
+        viewModelScope.launch {
+            val place = repo.reverseGeocode(lat, lon)
+
+            val city = GeoCodingDto(
+                name = place?.name ?: "Unknown location",
+                country = place?.country ?: "",
+                lat = lat,
+                lon = lon
+            )
+
+            onSelected(city)
+        }
+    }
+
 }
 
 class MapViewModelFactory() : ViewModelProvider.Factory {

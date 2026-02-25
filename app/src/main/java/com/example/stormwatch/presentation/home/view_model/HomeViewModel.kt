@@ -28,11 +28,11 @@ class HomeViewModel(private val repo : WeatherRepository,
         get() = _forecast
 
     private val _error: MutableLiveData<String> = MutableLiveData()
-    val error: LiveData<String>
+    val error: LiveData<String> //TODO use flow
         get() = _error
 
     private val _isLoading: MutableLiveData<Boolean> = MutableLiveData()
-    val isLoading: LiveData<Boolean>
+    val isLoading: LiveData<Boolean> //TODO use flow
         get() = _isLoading
 
     init {

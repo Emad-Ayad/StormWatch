@@ -5,6 +5,7 @@ import com.example.stormwatch.data.model.ForecastResponse
 import com.example.stormwatch.data.model.CurrentWeatherResponse
 import com.example.stormwatch.BuildConfig
 import com.example.stormwatch.data.model.GeoCodingDto
+import com.example.stormwatch.data.model.ReverseGeoDto
 import com.example.stormwatch.data.network.GeoRetrofit
 
 
@@ -68,6 +69,18 @@ class RemoteDataSource {
             city = city,
             apiKey = BuildConfig.WEATHER_API_KEY
         )
+    }
+
+
+    suspend fun reverseGeocode(
+        lat: Double,
+        lon: Double
+    ): ReverseGeoDto? {
+        return geoService.reverseGeocode(
+            lat=lat,
+            lon=lon,
+            apiKey = BuildConfig.WEATHER_API_KEY
+        ).firstOrNull()
     }
 
 

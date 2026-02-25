@@ -84,7 +84,6 @@ class SettingsViewModel(private val settings: SettingsStore) : ViewModel() {
                     else cont.resumeWithException(Exception("Failed to get location"))
             }.addOnFailureListener { cont.resumeWithException(it) }
         }
-
 }
 
 
