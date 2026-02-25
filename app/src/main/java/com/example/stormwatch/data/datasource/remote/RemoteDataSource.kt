@@ -4,13 +4,17 @@ import com.example.stormwatch.data.network.RetrofitHelper
 import com.example.stormwatch.data.model.ForecastResponse
 import com.example.stormwatch.data.model.CurrentWeatherResponse
 import com.example.stormwatch.BuildConfig
+import com.example.stormwatch.data.model.GeoCodingDto
+import com.example.stormwatch.data.network.GeoRetrofit
 
 
 class RemoteDataSource {
     private val weatherService :WeatherService
+    private val geoService : GeoService
 
     init {
         weatherService = RetrofitHelper.weatherService
+        geoService = GeoRetrofit.geoService
     }
 
 
@@ -58,6 +62,14 @@ class RemoteDataSource {
             lang = lang
         )
     }
+
+    suspend fun searchCity(city: String) : List<GeoCodingDto> {
+        return geoService.searchCity(
+            city = city,
+            apiKey = BuildConfig.WEATHER_API_KEY
+        )
+    }
+
 
 
 

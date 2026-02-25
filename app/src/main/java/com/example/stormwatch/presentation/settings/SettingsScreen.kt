@@ -126,7 +126,7 @@ fun SettingsScreen(navController: NavHostController) {
                             )
                         }
                         if (it == "map") {
-                            navController.navigate("map_picker")
+                            navController.navigate("map_picker_settings")
                         }
                     }
                 )

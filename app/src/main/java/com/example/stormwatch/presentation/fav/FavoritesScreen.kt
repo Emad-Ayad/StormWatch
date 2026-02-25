@@ -52,7 +52,7 @@ fun FavoritesScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    navController.navigate("map_picker")
+                    navController.navigate("map_picker_favorite")
                 }
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Add Favorite")
@@ -103,7 +103,7 @@ fun FavoritesScreen(
                         onDelete = {
                             viewModel.deleteFavorite(favorite)
                         },
-                        onClick = { //TODO later
+                        onClick = { //TODO nav later
 
                         }
                     )

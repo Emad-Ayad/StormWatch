@@ -3,6 +3,7 @@ package com.example.stormwatch.data.repo
 import com.example.stormwatch.data.datasource.remote.RemoteDataSource
 import com.example.stormwatch.data.model.CurrentWeatherResponse
 import com.example.stormwatch.data.model.ForecastResponse
+import com.example.stormwatch.data.model.GeoCodingDto
 
 
 class WeatherRepository(
@@ -34,4 +35,9 @@ class WeatherRepository(
     ): ForecastResponse{
         return remoteDataSource.getDailyForecast(lat, lon, units, lang)
     }
+
+    suspend fun searchCity(city: String) : List<GeoCodingDto> {
+        return remoteDataSource.searchCity(city)
+    }
+
 }

@@ -4,9 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import com.example.stormwatch.presentation.settings.MapScreen
+import com.example.stormwatch.presentation.map.MapScreen
 import com.example.stormwatch.presentation.settings.SettingsViewModel
 import com.example.stormwatch.presentation.settings.SettingsViewModelFactory
 import androidx.compose.material3.Icon
@@ -30,6 +29,8 @@ import com.example.stormwatch.presentation.home.HomeScreen
 import com.example.stormwatch.ui.theme.StormWatchTheme
 import com.example.stormwatch.presentation.settings.SettingsScreen
 import com.example.stormwatch.presentation.fav.FavoritesScreen
+import com.example.stormwatch.presentation.fav.FavoriteViewModel
+import com.example.stormwatch.presentation.fav.FavoritesViewModelFactory
 import com.example.stormwatch.ui.theme.*
 
 class MainActivity : ComponentActivity() {
@@ -38,10 +39,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             StormWatchTheme {
-                Scaffold( modifier = Modifier.fillMaxSize(),
-                    ) { innerPadding ->
-                    MyApp(    )
-                }
+                    MyApp()
             }
         }
     }
@@ -67,8 +65,30 @@ fun MyApp(modifier: Modifier = Modifier) {
             composable("SettingsScreen") {
                 SettingsScreen(navController)
             }
-            composable("map_picker") {
-                MapScreen(navController)
+            composable("map_picker_settings") {
+                val context = LocalContext.current
+                val settingsViewModel: SettingsViewModel =
+                    viewModel(factory = SettingsViewModelFactory(context))
+
+                MapScreen(navController,onLocationSelected = { city ->
+                        settingsViewModel.saveMapLocation(city.lat, city.lon)
+                        navController.popBackStack()
+                    }
+                )
+            }
+            composable("map_picker_favorite") {
+                val context = LocalContext.current
+                val favoritesViewModel: FavoriteViewModel =
+                    viewModel(factory = FavoritesViewModelFactory(context))
+
+                MapScreen(navController, onLocationSelected = { city ->
+                        favoritesViewModel.addFavorite(
+                            city = city.name,
+                            lat = city.lat,
+                            lon = city.lon
+                        )
+                    }
+                )
             }
             composable("FavScreen") {
                 FavoritesScreen(navController)
