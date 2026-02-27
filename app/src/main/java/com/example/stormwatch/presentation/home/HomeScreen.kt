@@ -29,6 +29,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import com.example.stormwatch.presentation.utils.*
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -49,6 +50,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -58,6 +60,7 @@ import com.example.stormwatch.ui.theme.*
 import com.example.stormwatch.data.model.ForecastResponse
 import com.example.stormwatch.data.model.DayForecast
 import com.example.stormwatch.presentation.home.view_model.HomeViewModel
+import com.example.stormwatch.presentation.home.view_model.WeatherStates
 import com.example.stormwatch.presentation.home.view_model.HomeViewModelFactory
 import kotlin.math.roundToInt
 import com.example.stormwatch.presentation.settings.SettingsViewModel
@@ -70,9 +73,7 @@ fun HomeScreen(navController: NavHostController){
     val context = LocalContext.current
     val settingsViewModel: SettingsViewModel = viewModel(factory = SettingsViewModelFactory(context))
     val viewModel: HomeViewModel = viewModel(factory = HomeViewModelFactory(settingsViewModel))
-    val forecast = viewModel.forecast.value
-    val isLoading by viewModel.isLoading.observeAsState(false)
-    val error by viewModel.error.observeAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -128,65 +129,66 @@ fun HomeScreen(navController: NavHostController){
                 )
         )
 
-        if (isLoading) {
-
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ){
-                CircularProgressIndicator()
-            }
-
-        } else if (forecast.list.isEmpty()) {
-
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ){
-                Text(
-                    text = "Location not set.\nPlease choose GPS or Map.",
-                    color = Color.White,
-                    textAlign = TextAlign.Center
-                )
-            }
-
-        } else if (error != null) {
-
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ){
-                Text(text = error ?: "Unknown error", color = Color.Red)
-            }
-
-        } else {
-            forecast.let {
-
+        when (uiState) {
+            is WeatherStates.Loading -> {
                 Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
-                        .padding(horizontal = 16.dp)
-                        .padding(top = 32.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    CircularProgressIndicator()
+                }
+            }
+            is WeatherStates.Error -> {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(text = (uiState as WeatherStates.Error).message ?: "Unknown error", color = Color.Red)
+                }
 
-                    Text(text = "Welcome To Your Storm Watch 👋", color = SubtleOnGlass,)
+            }
+            is WeatherStates.Success -> {
+                val forecast = (uiState as WeatherStates.Success).forecast
+                if (forecast.list.isEmpty()) {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "Location not set.\nPlease choose GPS or Map.",
+                            color = Color.White,
+                            textAlign = TextAlign.Center
+                        )
+                    }
 
-                    CurrentWeatherCard(it)
-                    MetricsRow(it)
-                    HourlyStrip(it)
-                    ForecastTabs(it)
+                } else {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState())
+                            .padding(horizontal = 16.dp)
+                            .padding(top = 32.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
 
-                    Spacer(Modifier.height(18.dp))
+                        Text(text = "Welcome To Your Storm Watch 👋", color = SubtleOnGlass,)
+
+                        CurrentWeatherCard(forecast)
+                        MetricsRow(forecast)
+                        HourlyStrip(forecast)
+                        ForecastTabs(forecast)
+
+                        Spacer(Modifier.height(18.dp))
+                    }
                 }
             }
         }
     }
 }
+
 
 
 @Composable
