@@ -19,23 +19,6 @@ class WeatherRepository(
     ): ForecastResponse{
        return remoteDataSource.getForecast(lat, lon, units, lang)
     }
-    suspend fun getCurrentWeather(
-        lat: Double,
-        lon: Double,
-        units: String?,
-        lang: String
-    ): CurrentWeatherResponse{
-        return remoteDataSource.getCurrentWeather(lat, lon, units, lang)
-    }
-
-    suspend fun getDailyForecast(
-        lat: Double,
-        lon: Double,
-        units: String?,
-        lang: String
-    ): ForecastResponse{
-        return remoteDataSource.getDailyForecast(lat, lon, units, lang)
-    }
 
     suspend fun searchCity(city: String) : List<GeoCodingDto> {
         return remoteDataSource.searchCity(city)

@@ -15,6 +15,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -35,6 +36,9 @@ import com.example.stormwatch.presentation.fav.FavoriteViewModel
 import com.example.stormwatch.presentation.fav.FavoritesViewModelFactory
 import com.example.stormwatch.presentation.weather_details.WeatherDetailsScreen
 import com.example.stormwatch.ui.theme.*
+import com.example.stormwatch.presentation.alert.*
+import com.example.stormwatch.presentation.alert.view_model.AlertViewModel
+import com.example.stormwatch.presentation.alert.view_model.AlertViewModelFactory
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -93,6 +97,21 @@ fun MyApp(modifier: Modifier = Modifier) {
                     }
                 )
             }
+            composable("map_picker_alert") {
+                val context = LocalContext.current
+
+                val graphEntry = remember(navController.currentBackStackEntry) {
+                    navController.getBackStackEntry(navController.graph.id)
+                }
+                val alertsViewModel: AlertViewModel = viewModel(
+                    viewModelStoreOwner = graphEntry,
+                    factory = AlertViewModelFactory(context)
+                )
+
+                MapScreen(navController, onLocationSelected = { city ->
+                    alertsViewModel.setPendingLocation(city.name, city.lat, city.lon)
+                })
+            }
             composable(
                 route = "weather_details/{lat}/{lon}/{city}",
                 arguments = listOf(
@@ -117,6 +136,18 @@ fun MyApp(modifier: Modifier = Modifier) {
             composable("FavScreen") {
                 FavoritesScreen(navController)
             }
+
+            composable("AlertScreen") {
+                val context = LocalContext.current
+                val graphEntry = remember(navController.currentBackStackEntry) {
+                    navController.getBackStackEntry(navController.graph.id)
+                }
+                val alertsViewModel: AlertViewModel = viewModel(
+                    viewModelStoreOwner = graphEntry,
+                    factory = AlertViewModelFactory(context)
+                )
+                AlertsScreen(navController = navController, viewModel = alertsViewModel)
+            }
         }
     }
 }
@@ -126,7 +157,8 @@ fun BottomNavBar(navController: NavHostController) {
     val items = listOf(
         Screens.HomeScreen,
         Screens.SettingsScreen,
-        Screens.FavScreen
+        Screens.FavScreen,
+        Screens.AlertScreen
     )
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route

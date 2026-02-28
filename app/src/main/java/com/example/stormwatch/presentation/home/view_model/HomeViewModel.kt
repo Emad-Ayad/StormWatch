@@ -11,9 +11,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.stormwatch.data.repo.WeatherRepository
 import com.example.stormwatch.data.datasource.remote.RemoteDataSource
 import com.example.stormwatch.data.model.ForecastResponse
-import com.example.stormwatch.data.model.CurrentWeatherResponse
-import com.example.stormwatch.data.model.City
-import com.example.stormwatch.data.model.Coord
 import kotlinx.coroutines.launch
 import com.example.stormwatch.presentation.settings.SettingsViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
