@@ -34,9 +34,10 @@ class SettingsViewModel(private val settings: SettingsStore) : ViewModel() {
         }
     }
 
-    fun updateLanguage(lang: String) {
+    fun updateLanguage(lang: String, onSaved: () -> Unit) {
         viewModelScope.launch {
             settings.saveLang(lang)
+            onSaved()
         }
     }
 

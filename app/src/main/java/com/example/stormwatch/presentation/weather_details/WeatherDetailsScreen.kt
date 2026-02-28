@@ -19,6 +19,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.stormwatch.presentation.utils.UiState
 import com.example.stormwatch.presentation.home.*
+import androidx.compose.ui.res.stringResource
+import com.example.stormwatch.R
 
 
 @Composable
@@ -69,7 +71,7 @@ fun WeatherDetailsScreen(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
-                Text("Failed to load weather")
+                Text(stringResource(R.string.unknown))
             }
         }
     }

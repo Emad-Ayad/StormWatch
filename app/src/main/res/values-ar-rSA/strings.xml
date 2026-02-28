@@ -1,0 +1,83 @@
+<resources>
+    <string name="app_name">StormWatch</string>
+
+    <!-- Bottom Navigation -->
+    <string name="nav_home">الرئيسية</string>
+    <string name="nav_map">الخريطة</string>
+    <string name="nav_favorite">المفضلة</string>
+    <string name="nav_alert">تنبيهات</string>
+    <string name="nav_settings">الإعدادات</string>
+
+    <!-- Home Screen -->
+    <string name="welcome_message">مرحبا بك في Storm Watch 👋</string>
+    <string name="location_not_set">لم يتم تحديد الموقع.\nالرجاء اختيار GPS أو الخريطة.</string>
+    <string name="unknown">غير معروف</string>
+    <string name="metric_wind">الرياح</string>
+    <string name="metric_humidity">الرطوبة</string>
+    <string name="metric_clouds">الغيوم</string>
+    <string name="metric_pressure">الضغط</string>
+    <string name="km_h">كم/س</string>
+    <string name="hpa">hPa</string> <!-- hPa can probably stay hPa or هكتوباسكال -->
+
+    <!-- Map Screen -->
+    <string name="search_city">البحث عن مدينة</string>
+    <string name="use_this_location">استخدام هذا الموقع</string>
+    <string name="cancel">إلغاء</string>
+
+    <!-- Favorites Screen -->
+    <string name="no_favorite_locations_yet">لا توجد مواقع مفضلة بعد</string>
+    <string name="add_your_first_location">أضف موقعك الأول</string>
+    <string name="delete_location">حذف الموقع</string>
+    <string name="delete_location_confirm">هل أنت متأكد من أنك تريد حذف هذا الموقع؟</string>
+    <string name="delete">حذف</string>
+    <string name="delete_favorite">حذف المفضلة</string>
+    <string name="lat_format">خط العرض: %.4f</string>
+    <string name="lon_format">خط الطول: %.4f</string>
+
+    <!-- Alerts Screen -->
+    <string name="add_alert">إضافة تنبيه</string>
+    <string name="no_active_alerts">لا توجد تنبيهات نشطة</string>
+    <string name="tap_add_alert">انقر على + لإضافة تنبيه طقس لأي موقع</string>
+    <string name="stop_alert_title">إيقاف التنبيه</string>
+    <string name="stop_alert_confirm">إيقاف تنبيه الطقس لـ %s؟</string>
+    <string name="stop">إيقاف</string>
+    <string name="keep">إبقاء</string>
+    <string name="alarm_sound">صوت المنبه</string>
+    <string name="notification">إشعار</string>
+    <string name="from">من</string>
+    <string name="until">حتى</string>
+    <string name="stop_alert">إيقاف التنبيه</string>
+
+    <!-- Add Alert Dialog -->
+    <string name="add_weather_alert">إضافة تنبيه طقس</string>
+    <string name="alert_duration">مدة التنبيه</string>
+    <string name="start_time">وقت البدء</string>
+    <string name="end_time">وقت الانتهاء</string>
+    <string name="alert_type">نوع التنبيه</string>
+    <string name="silent_notification">إشعار صامت</string>
+    <string name="notification_desc">إشعار نظام صامت</string>
+    <string name="alarm_with_sound">إنذار بصوت</string>
+    <string name="alarm_desc">إنذار واهتزاز</string>
+    <string name="validation_start_past">لا يمكن أن يكون وقت البدء في الماضي.</string>
+    <string name="validation_end_before_start">لا يمكن أن يكون وقت الانتهاء قبل وقت البدء.</string>
+    <string name="save_alert">حفظ التنبيه</string>
+
+    <!-- Settings Screen -->
+    <string name="language">اللغة</string>
+    <string name="arabic">العربية</string>
+    <string name="english">الإنجليزية</string>
+    <string name="temp_unit">وحدة الحرارة</string>
+    <string name="metric_unit">°C / م/ث</string>
+    <string name="standard_unit">°K  م/ث</string>
+    <string name="imperial_unit">°F  ميل/س</string>
+    <string name="location">الموقع</string>
+    <string name="gps">GPS</string>
+    <string name="map">الخريطة</string>
+    <string name="lat_label">دوائر العرض: %s</string>
+    <string name="lon_label">خطوط الطول: %s</string>
+    <string name="not_set">غير محدد</string>
+
+    <!-- Weather Details -->
+    <string name="weekly_forecast">توقعات الأسبوع</string>
+
+</resources>

@@ -1,6 +1,7 @@
 package com.example.stormwatch.presentation.settings
 
 import android.Manifest
+import android.app.Activity
 import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -35,6 +36,8 @@ import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.compose.ui.res.stringResource
+import com.example.stormwatch.R
 
 
 @Composable
@@ -78,32 +81,30 @@ fun SettingsScreen(navController: NavHostController) {
         Column(verticalArrangement = Arrangement.spacedBy(18.dp)) {
 
             SettingsGroup(
-                title = "Language"
+                title = stringResource(R.string.language)
             ) {
                 OptionRow(
                     options = listOf(
-                        Option("Arabic", "ar"),
-                        Option("English", "en"),
+                        Option(stringResource(R.string.arabic), "ar"),
+                        Option(stringResource(R.string.english), "en"),
                     ),
                     selectedValue = lang,
                     onSelect = { value ->
-                        when (value) {
-                            "ar" -> viewModel.updateLanguage("ar")
-                            "en" -> viewModel.updateLanguage("en")
-                            "default" -> viewModel.updateLanguage("default")
+                        viewModel.updateLanguage(value) {
+                            (context as? Activity)?.recreate()
                         }
                     }
                 )
             }
 
             SettingsGroup(
-                title = "Temp Unit"
+                title = stringResource(R.string.temp_unit)
             ) {
                 OptionRow(
                     options = listOf(
-                        Option("°C/ m/s", "metric"),
-                        Option("°K  m/s", "standard"),
-                        Option("°F  mph", "imperial"),
+                        Option(stringResource(R.string.metric_unit), "metric"),
+                        Option(stringResource(R.string.standard_unit), "standard"),
+                        Option(stringResource(R.string.imperial_unit), "imperial"),
                     ),
                     selectedValue = units,
                     onSelect = { value ->
@@ -112,13 +113,13 @@ fun SettingsScreen(navController: NavHostController) {
                 )
             }
 
-            SettingsGroup(title = "Location") {
+            SettingsGroup(title = stringResource(R.string.location)) {
                 OptionRow(
-                    options = listOf(Option("GPS", "gps"), Option("Map", "map")),
+                    options = listOf(Option(stringResource(R.string.gps), "gps"), Option(stringResource(R.string.map), "map")),
                     selectedValue = locationMethod,
                     onSelect = {
                         viewModel.updateLocationMethod(it)
-                        if (it == "gps") { // TODO recheck permissin
+                        if (it == "gps") {
                             if (hasPermission.value) viewModel.fetchGpsLocation(context)
                             else permissionLauncher.launch(
                                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
@@ -132,8 +133,12 @@ fun SettingsScreen(navController: NavHostController) {
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
-                Text("Lat: ${location.first ?: "Not set"}", color = Color.White)
-                Text("Lon: ${location.second ?: "Not set"}", color = Color.White)
+                Text(stringResource(R.string.lat_label,
+                    location.first?.toString() ?: stringResource(R.string.not_set)),
+                    color = Color.White)
+                Text(stringResource(R.string.lon_label,
+                    location.second?.toString() ?: stringResource(R.string.not_set)),
+                    color = Color.White)
             }
 
         }

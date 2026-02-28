@@ -26,6 +26,8 @@ import com.example.stormwatch.presentation.alert.util.AddAlertDialog
 import com.example.stormwatch.presentation.alert.view_model.AlertViewModel
 import java.text.SimpleDateFormat
 import java.util.*
+import androidx.compose.ui.res.stringResource
+import com.example.stormwatch.R
 
 @Composable
 fun AlertsScreen(
@@ -58,7 +60,7 @@ fun AlertsScreen(
                 onClick = { navController.navigate("map_picker_alert") },
                 containerColor = AccentYellow
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Add alert", tint = Color.White)
+                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.add_alert), tint = Color.White)
             }
         }
     ) { paddingValues ->
@@ -81,12 +83,12 @@ fun AlertsScreen(
                         tint = AccentYellow.copy(alpha = 0.3f)
                     )
                     Text(
-                        "No active alerts",
+                        stringResource(R.string.no_active_alerts),
                         fontSize = 14.sp,
                         fontWeight = FontWeight.SemiBold
                     )
                     Text(
-                        "Tap + to add a weather alert for any location",
+                        stringResource(R.string.tap_add_alert),
                         fontSize = 10.sp,
                         color = AccentYellow.copy(alpha = 0.5f)
                     )
@@ -115,21 +117,21 @@ fun AlertsScreen(
         if (showDeleteDialog && alertToDelete != null) {
             AlertDialog(
                 onDismissRequest = { showDeleteDialog = false },
-                title = { Text("Stop Alert") },
+                title = { Text(stringResource(R.string.stop_alert_title)) },
                 text = {
-                    Text("Stop the weather alert for ${alertToDelete!!.city}? .")
+                    Text(stringResource(R.string.stop_alert_confirm, alertToDelete!!.city))
                 },
                 confirmButton = {
                     TextButton(onClick = {
                         viewModel.deleteAlert(alertToDelete!!)
                         showDeleteDialog = false
                     }) {
-                        Text("Stop", color = Pink80)
+                        Text(stringResource(R.string.stop), color = Pink80)
                     }
                 },
                 dismissButton = {
                     TextButton(onClick = { showDeleteDialog = false }) {
-                        Text("Keep")
+                        Text(stringResource(R.string.keep))
                     }
                 }
             )
@@ -145,7 +147,7 @@ fun AlertItem(
     val fmt = remember { SimpleDateFormat("MMM dd  hh:mm a", Locale.getDefault()) }
 
     val isAlarm = alert.alertType == "ALARM"
-    val typeLabel = if (isAlarm) "Alarm Sound" else "Notification"
+    val typeLabel = if (isAlarm) stringResource(R.string.alarm_sound) else stringResource(R.string.notification)
     val typeIcon = if (isAlarm) Icons.AutoMirrored.Filled.VolumeUp else Icons.Default.Notifications
 
 
@@ -198,7 +200,7 @@ fun AlertItem(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Column {
-                    Text("From",
+                    Text(stringResource(R.string.from),
                         fontSize = 10.sp,
                         color = PurpleGrey40)
                     Text(fmt.format(Date(alert.startTime)),
@@ -206,7 +208,7 @@ fun AlertItem(
                         fontWeight = FontWeight.Medium)
                 }
                 Column(horizontalAlignment = Alignment.End) {
-                    Text("Until",
+                    Text(stringResource(R.string.until),
                         fontSize = 10.sp,
                         color = PurpleGrey40)
 
@@ -217,7 +219,7 @@ fun AlertItem(
             }
 
             Text(
-                "Lat: ${"%.4f".format(alert.lat)}, Lon: ${"%.4f".format(alert.lon)}",
+                "${stringResource(R.string.lat_format, alert.lat)}, ${stringResource(R.string.lon_format, alert.lon).replace("Lat", "Lon")}",
                 fontSize = 12.sp,
                 color = PurpleGrey40
             )
@@ -231,11 +233,11 @@ fun AlertItem(
                 ),
             ) {
                 Icon(Icons.Default.Delete,
-                    contentDescription = "Delete",
+                    contentDescription = stringResource(R.string.delete),
                     modifier = Modifier.size(16.dp))
 
                 Spacer(Modifier.width(6.dp))
-                Text("Stop Alert")
+                Text(stringResource(R.string.stop_alert))
             }
         }
     }

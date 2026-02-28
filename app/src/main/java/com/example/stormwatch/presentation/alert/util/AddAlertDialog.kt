@@ -20,6 +20,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,6 +28,8 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import java.text.SimpleDateFormat
 import java.util.*
+import com.example.stormwatch.R
+
 
 @Composable
 fun AddAlertDialog(
@@ -60,7 +63,7 @@ fun AddAlertDialog(
             Column(verticalArrangement = Arrangement.spacedBy(20.dp)) {
 
                 Text(
-                    text = "Add Weather Alert",
+                    text = stringResource(R.string.add_weather_alert),
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -72,10 +75,10 @@ fun AddAlertDialog(
                 )
 
                 TimePickerRow(
-                    label = "Start Time",
+                    label = stringResource(R.string.start_time),
                     timeMillis = startTime,
                     isError = startError,
-                    errorMessage = "Start time must be in the future",
+                    errorMessage = stringResource(R.string.validation_start_past),
                     context = context,
                     onTimePicked = {
                         startTime = it
@@ -84,10 +87,10 @@ fun AddAlertDialog(
                 )
 
                 TimePickerRow(
-                    label = "End Time",
+                    label = stringResource(R.string.end_time),
                     timeMillis = endTime,
                     isError = endError,
-                    errorMessage = "End time must be after start time",
+                    errorMessage = stringResource(R.string.validation_end_before_start),
                     context = context,
                     onTimePicked = {
                         endTime = it
@@ -97,7 +100,7 @@ fun AddAlertDialog(
 
 
                 Text(
-                    text = "Alert Type",
+                    text = stringResource(R.string.alert_type),
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold
                 )
@@ -107,14 +110,14 @@ fun AddAlertDialog(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     AlertTypeCard(
-                        label = "Notification",
+                        label = stringResource(R.string.notification),
                         icon = Icons.Default.Notifications,
                         isSelected = selectedType == "NOTIFICATION",
                         modifier = Modifier.weight(1f),
                         onClick = { selectedType = "NOTIFICATION" }
                     )
                     AlertTypeCard(
-                        label = "Alarm Sound",
+                        label = stringResource(R.string.alarm_sound),
                         icon = Icons.AutoMirrored.Filled.VolumeUp,
                         isSelected = selectedType == "ALARM",
                         modifier = Modifier.weight(1f),
@@ -132,7 +135,7 @@ fun AddAlertDialog(
                         modifier = Modifier.weight(1f),
                         shape = RoundedCornerShape(12.dp)
                     ) {
-                        Text("Cancel")
+                        Text(stringResource(R.string.cancel))
                     }
 
                     Button(
@@ -148,7 +151,7 @@ fun AddAlertDialog(
                         modifier = Modifier.weight(1f),
                         shape = RoundedCornerShape(12.dp)
                     ) {
-                        Text("Set Alert")
+                        Text(stringResource(R.string.save_alert))
                     }
                 }
             }

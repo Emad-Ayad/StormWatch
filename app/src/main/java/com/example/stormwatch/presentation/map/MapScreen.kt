@@ -32,6 +32,8 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.example.stormwatch.data.model.GeoCodingDto
+import androidx.compose.ui.res.stringResource
+import com.example.stormwatch.R
 
 @Composable
 fun MapScreen(navController: NavHostController, onLocationSelected: (GeoCodingDto) -> Unit) {
@@ -60,7 +62,7 @@ fun MapScreen(navController: NavHostController, onLocationSelected: (GeoCodingDt
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(12.dp),
-            label = { Text("Search city") }
+            label = { Text(stringResource(R.string.search_city)) }
         )
 
         LazyColumn {
@@ -116,7 +118,7 @@ fun MapScreen(navController: NavHostController, onLocationSelected: (GeoCodingDt
                         .padding(horizontal = 40.dp),
                     enabled = selectedLatLng != null
                 ) {
-                    Text("Use this location")
+                    Text(stringResource(R.string.use_this_location))
                 }
 
                 Spacer(Modifier.height(8.dp))
@@ -129,7 +131,7 @@ fun MapScreen(navController: NavHostController, onLocationSelected: (GeoCodingDt
                         .fillMaxWidth()
                         .padding(horizontal = 40.dp)
                 ) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.cancel))
                 }
             }
         }

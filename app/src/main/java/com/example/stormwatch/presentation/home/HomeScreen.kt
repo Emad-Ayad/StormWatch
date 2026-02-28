@@ -10,7 +10,6 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,42 +17,30 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import com.example.stormwatch.presentation.utils.*
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.example.stormwatch.R
 import com.example.stormwatch.ui.theme.*
@@ -65,6 +52,7 @@ import com.example.stormwatch.presentation.home.view_model.HomeViewModelFactory
 import kotlin.math.roundToInt
 import com.example.stormwatch.presentation.settings.SettingsViewModel
 import com.example.stormwatch.presentation.settings.SettingsViewModelFactory
+import androidx.compose.ui.res.stringResource
 
 
 @Composable
@@ -158,7 +146,7 @@ fun HomeScreen(navController: NavHostController){
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "Location not set.\nPlease choose GPS or Map.",
+                            text = stringResource(R.string.location_not_set),
                             color = Color.White,
                             textAlign = TextAlign.Center
                         )
@@ -174,7 +162,7 @@ fun HomeScreen(navController: NavHostController){
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
 
-                        Text(text = "Welcome To Your Storm Watch 👋", color = SubtleOnGlass,)
+                        Text(text = stringResource(R.string.welcome_message), color = SubtleOnGlass,)
 
                         CurrentWeatherCard(forecast)
                         MetricsRow(forecast)
@@ -205,7 +193,7 @@ fun CurrentWeatherCard(forecast : ForecastResponse) {
 
 
                 Text(
-                    current?.dateText ?: "Unknown",
+                    current?.dateText ?: stringResource(R.string.unknown),
                     color = SubtleOnGlass,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Medium)
@@ -223,7 +211,7 @@ fun CurrentWeatherCard(forecast : ForecastResponse) {
                 modifier = Modifier.height(120.dp).width(170.dp),
                 contentAlignment = Alignment.Center
             ) {
-               AsyncImage(
+                AsyncImage(
                     model = iconUrl,
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize(),
@@ -242,10 +230,10 @@ fun MetricsRow(forecast : ForecastResponse) {
             Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            MetricItem("${current?.wind?.speed} km/h", "Wind", R.drawable.wind) // TODO change this km/h
-            MetricItem("${current?.main?.humidity} %", "Humidity", R.drawable.humidity)
-            MetricItem("${current?.clouds?.all} %", "Clouds", R.drawable.rain)
-            MetricItem("${current?.main?.pressure} hPa", "Pressure", R.drawable.pressure)
+            MetricItem("${current?.wind?.speed} " + stringResource(R.string.km_h), stringResource(R.string.metric_wind), R.drawable.wind) // TODO change this km/h
+            MetricItem("${current?.main?.humidity} %", stringResource(R.string.metric_humidity), R.drawable.humidity)
+            MetricItem("${current?.clouds?.all} %", stringResource(R.string.metric_clouds), R.drawable.rain)
+            MetricItem("${current?.main?.pressure} " + stringResource(R.string.hpa), stringResource(R.string.metric_pressure), R.drawable.pressure)
         }
     }
 }
