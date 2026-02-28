@@ -1,3 +1,4 @@
+import org.gradle.kotlin.dsl.testImplementation
 import java.util.Properties
 import java.io.FileInputStream
 
@@ -104,4 +105,16 @@ dependencies {
 
     implementation("androidx.work:work-runtime-ktx:2.9.0")
     implementation("androidx.core:core-ktx:1.12.0")
+
+    testImplementation("org.robolectric:robolectric:4.16")
+    testImplementation("org.hamcrest:hamcrest-all:2.2")
+    testImplementation("androidx.test.ext:junit-ktx:1.2.1")
+    testImplementation("androidx.test:core-ktx:1.6.1")
+    testImplementation("androidx.arch.core:core-testing:2.2.0")
+    testImplementation("io.mockk:mockk:1.13.10")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
+    androidTestImplementation("androidx.arch.core:core-testing:2.2.0")
+    androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
+
+
 }
