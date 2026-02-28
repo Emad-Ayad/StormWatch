@@ -107,7 +107,7 @@ dependencies {
     implementation("androidx.core:core-ktx:1.12.0")
 
     testImplementation("org.robolectric:robolectric:4.16")
-    testImplementation("org.hamcrest:hamcrest-all:2.2")
+    testImplementation("org.hamcrest:hamcrest:2.2")
     testImplementation("androidx.test.ext:junit-ktx:1.2.1")
     testImplementation("androidx.test:core-ktx:1.6.1")
     testImplementation("androidx.arch.core:core-testing:2.2.0")
