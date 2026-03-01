@@ -9,8 +9,8 @@ class AlertLocalDataSource(private val dao: AlertDao)   {
         return dao.getAlerts()
     }
 
-    suspend fun insertAlert(alert: AlertEntity) {
-        dao.insertAlert(alert)
+    suspend fun insertAlert(alert: AlertEntity): Long  {
+       return dao.insertAlert(alert)
     }
 
     suspend fun deleteAlert(alert: AlertEntity) {

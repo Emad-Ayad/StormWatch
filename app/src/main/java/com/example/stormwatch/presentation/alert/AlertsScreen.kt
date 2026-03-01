@@ -1,5 +1,10 @@
 package com.example.stormwatch.presentation.alert
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -17,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,6 +33,7 @@ import com.example.stormwatch.presentation.alert.view_model.AlertViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 import androidx.compose.ui.res.stringResource
+import androidx.core.content.ContextCompat
 import com.example.stormwatch.R
 
 @Composable
@@ -34,6 +41,7 @@ fun AlertsScreen(
     navController: NavHostController,
     viewModel: AlertViewModel
 ) {
+    val context = LocalContext.current
     val alerts by viewModel.alerts.collectAsState()
     val pendingLocation by viewModel.pendingLocation.collectAsState()
 
@@ -54,10 +62,37 @@ fun AlertsScreen(
         )
     }
 
+    val notificationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            navController.navigate("map_picker_alert")
+        }
+    }
+
+    fun requestNotificationAndNavigate() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            when {
+                ContextCompat.checkSelfPermission(
+                    context, Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_GRANTED -> {
+                    navController.navigate("map_picker_alert")
+                }
+                else -> {
+                    notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                }
+            }
+        } else {
+            navController.navigate("map_picker_alert")
+        }
+    }
+
+
+
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { navController.navigate("map_picker_alert") },
+                onClick = { requestNotificationAndNavigate() },
                 containerColor = AccentYellow
             ) {
                 Icon(Icons.Default.Add, contentDescription = stringResource(R.string.add_alert), tint = Color.White)
