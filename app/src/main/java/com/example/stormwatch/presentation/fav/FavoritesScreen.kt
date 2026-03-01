@@ -19,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.WifiOff
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -47,6 +48,7 @@ import androidx.navigation.NavHostController
 import com.example.stormwatch.data.model.FavoriteEntity
 import com.example.stormwatch.ui.theme.Pink80
 import androidx.compose.ui.res.stringResource
+import com.example.stormwatch.NetworkUtils
 import com.example.stormwatch.R
 
 
@@ -60,12 +62,39 @@ fun FavoritesScreen(
     val favorites by viewModel.favorites.collectAsState()
     var showDeleteDialog = remember { mutableStateOf(false) }
     var favoriteToDelete by remember { mutableStateOf<FavoriteEntity?>(null) }
+    var isConnected by remember { mutableStateOf(NetworkUtils.isConnected(context)) }
+    var showNoInternetDialog by remember { mutableStateOf(false) }
+
+
+    if (showNoInternetDialog) {
+        AlertDialog(
+            onDismissRequest = { showNoInternetDialog = false },
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.WifiOff,
+                    contentDescription = null,
+                )
+            },
+            title = { Text(stringResource(R.string.no_internet_title)) },
+            text = { Text(stringResource(R.string.no_internet_message)) },
+            confirmButton = {
+                TextButton(onClick = { showNoInternetDialog = false }) {
+                    Text(stringResource(R.string.ok))
+                }
+            }
+        )
+    }
+
 
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    navController.navigate("map_picker_favorite")
+                    if (!isConnected){
+                        showNoInternetDialog = true
+                    }else {
+                        navController.navigate("map_picker_favorite")
+                    }
                 }
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Add Favorite")

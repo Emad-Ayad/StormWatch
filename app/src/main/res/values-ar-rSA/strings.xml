@@ -17,7 +17,11 @@
     <string name="metric_clouds">الغيوم</string>
     <string name="metric_pressure">الضغط</string>
     <string name="km_h">كم/س</string>
-    <string name="hpa">hPa</string> <!-- hPa can probably stay hPa or هكتوباسكال -->
+    <string name="hpa">hPa</string>
+    <string name="no_internet_title">لا انترنت</string>
+    <string name="no_internet_message">الرجاء تفحص الانترنت ومعاودة المحاولة .</string>
+
+
 
     <!-- Map Screen -->
     <string name="search_city">البحث عن مدينة</string>
@@ -76,6 +80,7 @@
     <string name="lat_label">دوائر العرض: %s</string>
     <string name="lon_label">خطوط الطول: %s</string>
     <string name="not_set">غير محدد</string>
+    <string name="ok">موافق</string>
 
     <!-- Weather Details -->
     <string name="weekly_forecast">توقعات الأسبوع</string>

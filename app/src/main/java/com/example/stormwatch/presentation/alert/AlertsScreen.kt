@@ -15,9 +15,11 @@ import androidx.compose.material.icons.automirrored.filled.VolumeUp
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.WifiOff
 import com.example.stormwatch.ui.theme.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,6 +36,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
+import com.example.stormwatch.NetworkUtils
 import com.example.stormwatch.R
 
 @Composable
@@ -47,6 +50,30 @@ fun AlertsScreen(
 
     var showDeleteDialog by remember { mutableStateOf(false) }
     var alertToDelete by remember { mutableStateOf<AlertEntity?>(null) }
+
+    var isConnected by remember { mutableStateOf(NetworkUtils.isConnected(context)) }
+    var showNoInternetDialog by remember { mutableStateOf(false) }
+
+
+    if (showNoInternetDialog) {
+        AlertDialog(
+            onDismissRequest = { showNoInternetDialog = false },
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.WifiOff,
+                    contentDescription = null,
+                )
+            },
+            title = { Text(stringResource(R.string.no_internet_title)) },
+            text = { Text(stringResource(R.string.no_internet_message)) },
+            confirmButton = {
+                TextButton(onClick = { showNoInternetDialog = false }) {
+                    Text(stringResource(R.string.ok))
+                }
+            }
+        )
+    }
+
 
     if (pendingLocation != null) {
         val loc = pendingLocation!!
@@ -92,7 +119,12 @@ fun AlertsScreen(
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { requestNotificationAndNavigate() },
+                onClick = {
+                    if (!isConnected){
+                        showNoInternetDialog = true
+                    }else {
+                        requestNotificationAndNavigate()
+                    } },
                 containerColor = AccentYellow
             ) {
                 Icon(Icons.Default.Add, contentDescription = stringResource(R.string.add_alert), tint = Color.White)

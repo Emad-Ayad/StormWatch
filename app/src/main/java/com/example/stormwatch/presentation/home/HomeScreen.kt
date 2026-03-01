@@ -17,15 +17,22 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.WifiOff
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import com.example.stormwatch.presentation.utils.*
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -53,6 +60,7 @@ import kotlin.math.roundToInt
 import com.example.stormwatch.presentation.settings.SettingsViewModel
 import com.example.stormwatch.presentation.settings.SettingsViewModelFactory
 import androidx.compose.ui.res.stringResource
+import com.example.stormwatch.NetworkUtils
 
 
 @Composable
@@ -62,6 +70,7 @@ fun HomeScreen(navController: NavHostController){
     val settingsViewModel: SettingsViewModel = viewModel(factory = SettingsViewModelFactory(context))
     val viewModel: HomeViewModel = viewModel(factory = HomeViewModelFactory(settingsViewModel))
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    var isConnected by remember { mutableStateOf(NetworkUtils.isConnected(context)) }
 
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -116,60 +125,96 @@ fun HomeScreen(navController: NavHostController){
                     )
                 )
         )
-
-        when (uiState) {
-            is WeatherStates.Loading -> {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    CircularProgressIndicator()
-                }
+        if(!isConnected){
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Icon(
+                    imageVector = Icons.Default.WifiOff,
+                    contentDescription = null,
+                    tint = Color.White.copy(alpha = 0.7f),
+                    modifier = Modifier.size(70.dp)
+                )
+                Spacer(Modifier.height(16.dp))
+                Text(
+                    text = stringResource(R.string.no_internet_title),
+                    color = Color.White,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    text = stringResource(R.string.no_internet_message),
+                    color = Color.White.copy(alpha = 0.6f),
+                    fontSize = 14.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
             }
-            is WeatherStates.Error -> {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(text = (uiState as WeatherStates.Error).message ?: "Unknown error", color = Color.Red)
+        }else {
+            when (uiState) {
+                is WeatherStates.Loading -> {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        CircularProgressIndicator()
+                    }
                 }
-
-            }
-            is WeatherStates.Success -> {
-                val forecast = (uiState as WeatherStates.Success).forecast
-                if (forecast.list.isEmpty()) {
+                is WeatherStates.Error -> {
                     Column(
                         modifier = Modifier.fillMaxSize(),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = stringResource(R.string.location_not_set),
-                            color = Color.White,
-                            textAlign = TextAlign.Center
+                            text = (uiState as WeatherStates.Error).message ?: "Unknown error",
+                            color = Color.Red
                         )
                     }
 
-                } else {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .verticalScroll(rememberScrollState())
-                            .padding(horizontal = 16.dp)
-                            .padding(top = 32.dp),
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
+                }
 
-                        Text(text = stringResource(R.string.welcome_message), color = SubtleOnGlass,)
+                is WeatherStates.Success -> {
+                    val forecast = (uiState as WeatherStates.Success).forecast
+                    if (forecast.list.isEmpty()) {
+                        Column(
+                            modifier = Modifier.fillMaxSize(),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = stringResource(R.string.location_not_set),
+                                color = Color.White,
+                                textAlign = TextAlign.Center
+                            )
+                        }
 
-                        CurrentWeatherCard(forecast)
-                        MetricsRow(forecast)
-                        HourlyStrip(forecast)
-                        ForecastTabs(forecast)
+                    } else {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .verticalScroll(rememberScrollState())
+                                .padding(horizontal = 16.dp)
+                                .padding(top = 32.dp),
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
 
-                        Spacer(Modifier.height(18.dp))
+                            Text(
+                                text = stringResource(R.string.welcome_message),
+                                color = SubtleOnGlass,
+                            )
+
+                            CurrentWeatherCard(forecast)
+                            MetricsRow(forecast)
+                            HourlyStrip(forecast)
+                            ForecastTabs(forecast)
+
+                            Spacer(Modifier.height(18.dp))
+                        }
                     }
                 }
             }

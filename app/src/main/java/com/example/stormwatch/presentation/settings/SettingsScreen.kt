@@ -16,15 +16,22 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.WifiOff
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Icon
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
+import androidx.compose.material3.SegmentedButtonDefaults.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -37,6 +44,7 @@ import androidx.core.app.ActivityCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.compose.ui.res.stringResource
+import com.example.stormwatch.NetworkUtils
 import com.example.stormwatch.R
 
 
@@ -50,6 +58,8 @@ fun SettingsScreen(navController: NavHostController) {
 
     val locationMethod by viewModel.locationMethod.collectAsState()
     val location by viewModel.location.collectAsState()
+    var isConnected by remember { mutableStateOf(NetworkUtils.isConnected(context)) }
+    var showNoInternetDialog by remember { mutableStateOf(false) }
 
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
@@ -65,6 +75,25 @@ fun SettingsScreen(navController: NavHostController) {
                     PackageManager.PERMISSION_GRANTED ||
                     ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) ==
                     PackageManager.PERMISSION_GRANTED)
+    }
+
+    if (showNoInternetDialog) {
+        AlertDialog(
+            onDismissRequest = { showNoInternetDialog = false },
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.WifiOff,
+                    contentDescription = null,
+                )
+            },
+            title = { Text(stringResource(R.string.no_internet_title)) },
+            text = { Text(stringResource(R.string.no_internet_message)) },
+            confirmButton = {
+                TextButton(onClick = { showNoInternetDialog = false }) {
+                    Text(stringResource(R.string.ok))
+                }
+            }
+        )
     }
 
 
@@ -127,7 +156,11 @@ fun SettingsScreen(navController: NavHostController) {
                             )
                         }
                         if (it == "map") {
+                            if (!isConnected){
+                                showNoInternetDialog = true
+                            }else{
                             navController.navigate("map_picker_settings")
+                            }
                         }
                     }
                 )

@@ -18,6 +18,8 @@
     <string name="metric_pressure">Pressure</string>
     <string name="km_h">km/h</string>
     <string name="hpa">hPa</string>
+    <string name="no_internet_title">No Internet</string>
+    <string name="no_internet_message">Please check your internet connection and try again.</string>
 
     <!-- Map Screen -->
     <string name="search_city">Search city</string>
@@ -76,6 +78,8 @@
     <string name="lat_label">Lat: %s</string>
     <string name="lon_label">Lon: %s</string>
     <string name="not_set">Not set</string>
+    <string name="ok">ok</string>
+
 
     <!-- Weather Details -->
     <string name="weekly_forecast">Weekly Forecast</string>
